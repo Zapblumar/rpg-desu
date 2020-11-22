@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 
+const { Warrior } = require('./CharacterClasses');
 const Character = require('./Character');
 const { BasicAttack, MageArmor, Shrink } = require('./Abilities');
 
@@ -36,10 +37,8 @@ const loop = () => {
         orc.useAbility(enemyAction, player);
         player.useAbility(playerAction, orc);
       }
-      player.reduceEffectDurations();
-      orc.reduceEffectDurations();
-      player.filterEffects();
-      orc.filterEffects();
+      player.updateEffects();
+      orc.updateEffects();
       console.log(player.toString());
       console.log(orc.toString());
       if (player.isAlive && orc.isAlive) return loop();
@@ -50,20 +49,14 @@ const loop = () => {
 let player;
 const orc = new Character({
   name: 'Balethzar',
-  health: 346,
-  strength: 68,
-  defense: 419,
-  abilities: [new BasicAttack()],
+  characterClass: Warrior,
 });
 getPlayerInfo()
   .then(({ name }) => {
     player = new Character({
       name,
-      health: 13,
-      strength: 2,
-      defense: 1,
-      mana: 30,
-      abilities: [new BasicAttack(), new MageArmor(), new Shrink()],
+      characterClass: Warrior,
+      bonusAbilities: [new MageArmor(), new Shrink()],
     });
     console.log(
       `${player.name} awakes butt-naked in the middle of an orc field. In the distance, ${player.name} sees a hulking figure sprinting full speed towards ${player.name}. It is ${orc.name}. Fight commence. ${player.name} rolls a nat 1 for initiative.`

@@ -1,23 +1,32 @@
 class Character {
-  constructor({ name, health, strength, defense, mana, abilities }) {
+  constructor({
+    name,
+    characterClass,
+    bonusStats: { health, mana, strength, defense } = {},
+    bonusAbilities = [],
+  }) {
     this.name = name;
-    this.rawHealth = health;
-    this.rawStrength = strength;
-    this.rawDefense = defense;
-    this.mana = mana;
+    this.stats = {
+      maxHealth: characterClass.generateStat('health') + (health ?? 0),
+      maxMana: characterClass.generateStat('health') + (mana ?? 0),
+      strength: characterClass.generateStat('strength') + (strength ?? 0),
+      defense: characterClass.generateStat('defense') + (defense ?? 0),
+    };
+    this._health = this.stats.maxHealth;
+    this.mana = this.stats.maxHealth;
+    this.abilities = characterClass.abilities.concat(bonusAbilities);
     this.effects = [];
-    this.abilities = abilities;
   }
 
   get health() {
     return this.effects.reduce(
       (health, { health: { scalar, offset } }) => scalar * health + offset,
-      this.rawHealth
+      this._health
     );
   }
 
   set health(value) {
-    this.rawHealth = this.effects
+    this._health = this.effects
       .reverse()
       .reduce((value, { health: { scalar, offset } }) => (value - offset) / scalar, value);
   }
@@ -25,14 +34,14 @@ class Character {
   get strength() {
     return this.effects.reduce(
       (strength, { strength: { scalar, offset } }) => scalar * strength + offset,
-      this.rawStrength
+      this.stats.strength
     );
   }
 
   get defense() {
     return this.effects.reduce(
       (defense, { defense: { scalar, offset } }) => scalar * defense + offset,
-      this.rawDefense
+      this.stats.defense
     );
   }
 
@@ -48,12 +57,9 @@ class Character {
     this.abilities[index].apply(this, victim);
   }
 
-  reduceEffectDurations(amount = 1) {
-    this.effects.forEach((effect) => (effect.duration -= amount));
-  }
-
-  filterEffects() {
+  updateEffects(dt = 1) {
     this.effects = this.effects.filter((effect) => {
+      effect.duration -= dt;
       if (effect.duration > 0) return true;
       console.log(effect.completionMessage);
     });
