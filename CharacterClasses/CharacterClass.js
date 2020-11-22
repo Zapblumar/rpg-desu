@@ -1,5 +1,5 @@
 class CharacterClass {
-  constructor({ name, stats: { health, mana, strength, defense } = {} }) {
+  constructor({ name, stats: { health, mana, strength, defense } = {}, abilities = [] }) {
     this.name = name;
     this.stats = {
       health: { min: 0, max: 0, ...health },
@@ -7,6 +7,7 @@ class CharacterClass {
       strength: { min: 0, max: 0, ...strength },
       defense: { min: 0, max: 0, ...defense },
     };
+    this.abilities = abilities;
   }
 
   generateStat(statName) {
