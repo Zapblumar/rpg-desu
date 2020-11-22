@@ -1,7 +1,7 @@
 const inquirer = require('inquirer');
 
 const Character = require('./Character');
-const { BasicAttack, MageArmor, Shrink } = require('../Abilities');
+const { BasicAttack, MageArmor, Shrink } = require('./Abilities');
 
 const getPlayerInfo = () => {
   return inquirer.prompt({
