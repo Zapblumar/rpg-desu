@@ -2,7 +2,7 @@ const inquirer = require('inquirer');
 
 const { Warrior } = require('./CharacterClasses');
 const Character = require('./Character');
-const { BasicAttack, MageArmor, Shrink } = require('./Abilities');
+const { BasicAttack, MageArmor, Shrink, Fireball } = require('./Abilities');
 
 const getPlayerInfo = () => {
   return inquirer.prompt({
@@ -56,7 +56,7 @@ getPlayerInfo()
     player = new Character({
       name,
       characterClass: Warrior,
-      bonusAbilities: [new MageArmor(), new Shrink()],
+      bonusAbilities: [new MageArmor(), new Shrink(), new Fireball()],
     });
     console.log(
       `${player.name} awakes butt-naked in the middle of an orc field. In the distance, ${player.name} sees a hulking figure sprinting full speed towards ${player.name}. It is ${orc.name}. Fight commence. ${player.name} rolls a nat 1 for initiative.`
